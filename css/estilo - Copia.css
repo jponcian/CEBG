@@ -1,0 +1,83 @@
+
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+/*  background-color: #f1f1f1;*/
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #3B71CA;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #0275d8;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+
+.select2-selection__rendered {
+    line-height: 31px !important;
+}
+.select2-container .select2-selection--single {
+    height: 38px !important;
+}
+.select2-selection__arrow {
+    height: 34px !important;
+}
+
+table th {
+    background-color: #337ab7 !important;
+    color: white;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+ 
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 50px;
+}
+
+.esquinas{ 
+  border-radius: 10px; 
+/*  position: absolute; */
+/*  top: 1px; */
+/*  left: 1px; */
+  width:auto; 
+  height: auto; 
+  background-color: lightblue; 
+} 
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 50px;
+  background-color: #f5f5f5;
+}
+
+.texto_blanco {color: #FFFFFF}

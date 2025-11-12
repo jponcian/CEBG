@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<RelacionRetencionesISLR RifAgente="G200012870" Periodo="202207">
+<DetalleRetencion>
+		<RifRetenido>V169123370</RifRetenido>
+		<NumeroFactura>000011</NumeroFactura>
+		<NumeroControl>000011</NumeroControl>
+		<FechaOperacion>25/07/2022</FechaOperacion>
+		<CodigoConcepto>053</CodigoConcepto>
+		<MontoOperacion>100.00</MontoOperacion>
+		<PorcentajeRetencion>1.00</PorcentajeRetencion>
+		</DetalleRetencion>
+<DetalleRetencion>
+		<RifRetenido>V169123370</RifRetenido>
+		<NumeroFactura>000022</NumeroFactura>
+		<NumeroControl>000022</NumeroControl>
+		<FechaOperacion>25/07/2022</FechaOperacion>
+		<CodigoConcepto>053</CodigoConcepto>
+		<MontoOperacion>200.00</MontoOperacion>
+		<PorcentajeRetencion>1.00</PorcentajeRetencion>
+		</DetalleRetencion>
+</RelacionRetencionesISLR>

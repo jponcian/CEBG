@@ -1,0 +1,28 @@
+<?php
+
+$data = json_decode(file_get_contents('php://input'), TRUE);
+
+# Ahorausuario sigue siendo un objeto, con propiedades. 
+# Podemos acceder a ellas dependiendo de cómo las hayamos nombrado en el lado del cliente
+
+$id = $data['registro']['id'];
+$rif = strtoupper($data['registro']['rif']);
+$nombre = strtoupper($data['registro']['nombre']);
+$domicilio = strtoupper($data['registro']['domicilio']);
+$ciudad = strtoupper($data['registro']['ciudad']);
+$estado = strtoupper($data['registro']['estado']);
+$parroquia = strtoupper($data['registro']['zona']);
+$representante = strtoupper($data['registro']['representante']);
+$ced_representante = $data['registro']['ced_representante'];
+$cel_contacto = $data['registro']['cel_contacto'];
+$email = strtoupper($data['registro']['email']);
+$usuario = $_GET['usuario'];
+
+require __DIR__ . '/contribuyente_rutinas.php';
+
+$contribuyente = new CrudAdminContribuyente();
+
+echo $contribuyente->Editar($id,$rif,$nombre,$domicilio,$ciudad,$estado,$parroquia,$representante,$ced_representante,$cel_contacto,$email,$usuario);
+
+?>
+
