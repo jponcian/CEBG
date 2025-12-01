@@ -127,8 +127,21 @@ include_once "../validacion_usuario.php";
 			dataType: "json",
 			data: parametros,
 			success: function (data) {
-				if (data.tipo == "info") { alertify.success(data.msg); tabla(); }
-				else { alertify.alert(data.msg); }
+				if (data.tipo == "info") { 
+					Swal.fire({
+						icon: 'success',
+						title: 'Éxito',
+						text: data.msg
+					});
+					tabla(); 
+				}
+				else { 
+					Swal.fire({
+						icon: 'error',
+						title: 'Error',
+						text: data.msg
+					});
+				}
 				//--------------
 			}
 
@@ -143,9 +156,9 @@ include_once "../validacion_usuario.php";
 	//---------------------
 	function validar() {
 		error = 0;
-		if (document.form1.ONOMINA.value == "0") { document.form1.ONOMINA.focus(); alertify.alert("Debe indicar la Nomina a Generar!"); error = 1; }
-		if (document.form1.OFECHA.value == "") { document.form1.OFECHA.focus(); alertify.alert("Debe indicar el Periodo a Generar!"); error = 1; }
-		if (document.form1.OQUINCENA.value == "0") { document.form1.OQUINCENA.focus(); alertify.alert("Debe indicar la Quincena a Generar!"); error = 1; }
+		if (document.form1.ONOMINA.value == "0") { document.form1.ONOMINA.focus(); Swal.fire({ icon: 'warning', title: 'Atención', text: "Debe indicar la Nomina a Generar!" }); error = 1; }
+		if (document.form1.OFECHA.value == "") { document.form1.OFECHA.focus(); Swal.fire({ icon: 'warning', title: 'Atención', text: "Debe indicar el Periodo a Generar!" }); error = 1; }
+		if (document.form1.OQUINCENA.value == "0") { document.form1.OQUINCENA.focus(); Swal.fire({ icon: 'warning', title: 'Atención', text: "Debe indicar la Quincena a Generar!" }); error = 1; }
 		return error;
 	}
 	//--------------------- PARA BUSCAR
@@ -157,7 +170,14 @@ include_once "../validacion_usuario.php";
 	function generar_nomina() {
 		if (validar() == 0) {
 			//$('#boton').hide("slow"); //fadeOut
-			alertify.alert('Espere mientras la Nomina ' + document.form1.ONOMINA.value + ' es Generada...');// 
+			Swal.fire({
+				title: 'Procesando...',
+				text: 'Espere mientras la Nomina ' + document.form1.ONOMINA.value + ' es Generada...',
+				allowOutsideClick: false,
+				didOpen: () => {
+					Swal.showLoading()
+				}
+			});
 			$('#div1').html('<div align="center"><img width="125" height="125" src="images/espera(1).gif"/><br/>Espere mientras la Nomina es Generada...</div>');
 			var parametros = $("#form1").serialize();
 			$.ajax({
@@ -166,15 +186,35 @@ include_once "../validacion_usuario.php";
 				dataType: "json",
 				data: parametros,
 				success: function (data) {
+					Swal.close();
 					if (data.tipo == "info") {
-						alertify.success(data.msg); tabla();
+						Swal.fire({
+							icon: 'success',
+							title: 'Éxito',
+							text: data.msg
+						});
+						tabla();
 						setTimeout(function () {
 							$('#boton').show("slow"); $('#espera').hide("slow");
 						}, 10);//150000
 						$('#espera').show("slow");
 					}//$('#boton').show("slow");
-					else { alertify.alert(data.msg); }
+					else { 
+						Swal.fire({
+							icon: data.tipo === 'warning' ? 'warning' : 'error',
+							title: 'Atención',
+							text: data.msg
+						});
+					}
 					//--------------
+				},
+				error: function() {
+					Swal.close();
+					Swal.fire({
+						icon: 'error',
+						title: 'Error',
+						text: 'Ocurrió un error inesperado al procesar la solicitud.'
+					});
 				}
 
 			});
@@ -186,5 +226,7 @@ include_once "../validacion_usuario.php";
 		viewMode: "months",
 		minViewMode: "months",
 		autoclose: true
+	}).on('changeDate', function(e){
+		$(this).datepicker2('hide');
 	});
 </script>
