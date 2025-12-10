@@ -6,7 +6,7 @@ include_once "../funciones/auxiliar_php.php";
 $info = array();
 $tipo = 'info';
 $tiempo_inicio = microtime(true);
- 
+
 //------------- INICIAR TRANSACCIÓN
 $_SESSION['conexionsql']->begin_transaction();
 
