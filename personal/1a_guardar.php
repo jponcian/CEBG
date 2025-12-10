@@ -68,11 +68,13 @@ try {
     $categoria_descuentos = $registrom->cat_descuentos;
     
     //------------- SI LA NOMINA YA FUE SOLICITADA
-    $consultx = "SELECT id FROM nomina WHERE estatus>0 AND nomina='$nomina' AND hasta='$hasta' AND tipo_pago='001' and lote=1;";
-    $tablx = $_SESSION['conexionsql']->query($consultx);	
-    if ($tablx->num_rows>0)
-    { 
-        throw new Exception("La nómina de sueldos ya fue generada para este período");
+    if ($_POST['oquincena']==1) {
+        $consultx = "SELECT id FROM nomina WHERE estatus>0 AND nomina='$nomina' AND hasta='$hasta' AND tipo_pago='001' and lote=1;";
+        $tablx = $_SESSION['conexionsql']->query($consultx);	
+        if ($tablx->num_rows>0)
+        { 
+            throw new Exception("La nómina de sueldos ya fue generada para este período");
+        }
     }
     
     $consultx = "SELECT id FROM nomina WHERE estatus>0 AND nomina='$nomina' AND hasta='$hasta' AND tipo_pago='002' and lote=1;";
@@ -345,7 +347,7 @@ try {
             $total_neto = $total_asignaciones - $total_descuentos;
             
             // Agregar a array de nómina CON TOTALES CALCULADOS
-            $valores_nomina[] = "('".$_SESSION['conexionsql']->real_escape_string($profesion1)."', '".$_SESSION['conexionsql']->real_escape_string($ingreso1)."', '$id_solicitud_sueldo', 1, '$sueldo_mensual', '$num_nomina', '$tipo_pago', '".$_SESSION['conexionsql']->real_escape_string($cargo)."', '$categoria', '".$_SESSION['conexionsql']->real_escape_string($ubicacion)."', '".$_SESSION['conexionsql']->real_escape_string($nomina)."', '$partida', '$cedula', ".anno($fecha).", '$fecha', 'PAGO DE QUINCENA', '$desde', '$hasta', $total_asignaciones, $total_descuentos, $total_neto, 0, '".$_SESSION['CEDULA_USUARIO']."')";
+            $valores_nomina[] = "(0, 0, 0, 0, '".$_SESSION['conexionsql']->real_escape_string($profesion1)."', '".$_SESSION['conexionsql']->real_escape_string($ingreso1)."', '$id_solicitud_sueldo', 1, '$sueldo_mensual', '$num_nomina', '$tipo_pago', '".$_SESSION['conexionsql']->real_escape_string($cargo)."', '$categoria', '".$_SESSION['conexionsql']->real_escape_string($ubicacion)."', '".$_SESSION['conexionsql']->real_escape_string($nomina)."', '$partida', '$cedula', ".anno($fecha).", '$fecha', 'PAGO DE QUINCENA', '$desde', '$hasta', $total_asignaciones, $total_descuentos, $total_neto, 0, '".$_SESSION['CEDULA_USUARIO']."')";
             
             // Guardar índice y cédula para este empleado
             $idx_empleado = count($valores_nomina) - 1;
@@ -388,13 +390,13 @@ try {
                     $total_descuentos_vac = 0;
                     $total_neto_vac = $vacaciones;
                     
-                    // Insertar con la misma estructura que quincena (23 columnas)
-                    $valores_nomina[] = "('', '', '$id_solicitud_vaca', 1, '$sueldo_mensual', '$num_nominav', '003', '".$_SESSION['conexionsql']->real_escape_string($cargo)."', '$categoria', '".$_SESSION['conexionsql']->real_escape_string($ubicacion)."', '".$_SESSION['conexionsql']->real_escape_string($nomina)."', '$partida_vacaciones', '$cedula', ".anno($fecha).", '$fecha', 'PAGO DE VACACIONES', '$desde_m', '$hasta', $total_asignaciones_vac, $total_descuentos_vac, $total_neto_vac, 0, '".$_SESSION['CEDULA_USUARIO']."')";
+                    // Insertar con las columnas prof, antiguedad, hijos, dias para que aparezcan en el PDF
+                    $valores_nomina[] = "('$prima_prof', '$prima_antiguedad', '$prima_hijos', '$dias', '', '', '$id_solicitud_vaca', 1, '$sueldo_mensual', '$num_nominav', '003', '".$_SESSION['conexionsql']->real_escape_string($cargo)."', '$categoria', '".$_SESSION['conexionsql']->real_escape_string($ubicacion)."', '".$_SESSION['conexionsql']->real_escape_string($nomina)."', '$partida_vacaciones', '$cedula', ".anno($fecha).", '$fecha', 'PAGO DE VACACIONES', '$desde_m', '$hasta', $total_asignaciones_vac, $total_descuentos_vac, $total_neto_vac, 0, '".$_SESSION['CEDULA_USUARIO']."')";
                     
                     $idx_vacaciones = count($valores_nomina) - 1;
                     $cedulas_empleados[$idx_vacaciones] = $cedula;
                     
-                    // Asignación de vacaciones
+                    // Asignación de vacaciones (solo la asignación principal, sin primas separadas)
                     if (!isset($valores_asignaciones[$idx_vacaciones])) {
                         $valores_asignaciones[$idx_vacaciones] = array();
                     }
@@ -425,8 +427,8 @@ try {
                 $total_descuentos_tickets = 0;
                 $total_neto_tickets = $cestatickets;
                 
-                // Insertar con la misma estructura que quincena (23 columnas)
-                $valores_nomina[] = "('', '', '$id_solicitud_tickets', 1, '$sueldo_mensual', '$num_nominac', '002', '".$_SESSION['conexionsql']->real_escape_string($cargo)."', '$categoria', '".$_SESSION['conexionsql']->real_escape_string($ubicacion)."', '".$_SESSION['conexionsql']->real_escape_string($nomina)."', '$partida_tickets', '$cedula', ".anno($fecha).", '$fecha', 'PAGO DE CESTATICKETS', '$desde_m', '$hasta', $total_asignaciones_tickets, $total_descuentos_tickets, $total_neto_tickets, 0, '".$_SESSION['CEDULA_USUARIO']."')";
+                // Insertar con valores 0 para prof, antiguedad, hijos, dias
+                $valores_nomina[] = "(0, 0, 0, 0, '', '', '$id_solicitud_tickets', 1, '$sueldo_mensual', '$num_nominac', '002', '".$_SESSION['conexionsql']->real_escape_string($cargo)."', '$categoria', '".$_SESSION['conexionsql']->real_escape_string($ubicacion)."', '".$_SESSION['conexionsql']->real_escape_string($nomina)."', '$partida_tickets', '$cedula', ".anno($fecha).", '$fecha', 'PAGO DE CESTATICKETS', '$desde_m', '$hasta', $total_asignaciones_tickets, $total_descuentos_tickets, $total_neto_tickets, 0, '".$_SESSION['CEDULA_USUARIO']."')";
                 
                 $idx_tickets = count($valores_nomina) - 1;
                 $cedulas_empleados[$idx_tickets] = $cedula;
@@ -447,7 +449,7 @@ try {
     
     //------------- EJECUTAR INSERT MASIVO DE NÓMINA
     if (!empty($valores_nomina)) {
-        $sql_nomina = "INSERT INTO nomina (profesion1, ingreso1, id_solicitud, lote, sueldo_mensual, num_nomina, tipo_pago, cargo, categoria, ubicacion, nomina, partida, cedula, anno, fecha, descripcion, desde, hasta, asignaciones, descuentos, total, estatus, usuario) VALUES " . implode(", ", $valores_nomina);
+        $sql_nomina = "INSERT INTO nomina (prof, antiguedad, hijos, dias_trabajados, profesion1, ingreso1, id_solicitud, lote, sueldo_mensual, num_nomina, tipo_pago, cargo, categoria, ubicacion, nomina, partida, cedula, anno, fecha, descripcion, desde, hasta, asignaciones, descuentos, total, estatus, usuario) VALUES " . implode(", ", $valores_nomina);
         
         if (!$_SESSION['conexionsql']->query($sql_nomina)) {
             throw new Exception("Error al insertar nóminas: " . $_SESSION['conexionsql']->error);
